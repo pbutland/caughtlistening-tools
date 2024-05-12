@@ -26,7 +26,7 @@ async function run(files: ReadonlyArray<string>, apiKey: string, outputDir: stri
  const elevenlabs = new ElevenLabsClient({ apiKey });
 
   logger.info(`Processing ${files.length} files`);
-  const linesArray = await Promise.all(files.map(file => readFile(file)));
+  const linesArray = files.map(file => readFile(file));
 
   const lines = linesArray.flat()
     .filter(line => !!line.text);
@@ -54,7 +54,7 @@ async function run(files: ReadonlyArray<string>, apiKey: string, outputDir: stri
   };
 }
 
-async function readFile(file: string) {
+function readFile(file: string) {
   logger.info(`Processing ${file}`);
   const json = fs.readFileSync(file, 'utf-8');
   return JSON.parse(json);
