@@ -126,3 +126,4 @@ for key, value in groupby(data, key_func):
             f.close()
         progress += 1
         print(f"Progress {progress/numItems:.2%}")
+os.remove(f'{output_dir}/tmp.wav')
