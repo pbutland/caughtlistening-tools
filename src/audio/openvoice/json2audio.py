@@ -29,16 +29,17 @@ reference_dir = 'data/reference'
 # v2
 if args.version == 'v2':
     ckpt_converter = 'checkpoints_v2/converter'
-
-base_speaker_tts = BaseSpeakerTTS(f'{ckpt_base}/config.json', device=device)
-base_speaker_tts.load_ckpt(f'{ckpt_base}/checkpoint.pth')
+else:
+    base_speaker_tts = BaseSpeakerTTS(f'{ckpt_base}/config.json', device=device)
+    base_speaker_tts.load_ckpt(f'{ckpt_base}/checkpoint.pth')
 
 tone_color_converter = ToneColorConverter(f'{ckpt_converter}/config.json', device=device)
 tone_color_converter.load_ckpt(f'{ckpt_converter}/checkpoint.pth')
 
 os.makedirs(output_dir, exist_ok=True)
 
-source_se = torch.load(f'{ckpt_base}/en_default_se.pth').to(device)
+if args.version != 'v2':
+    source_se = torch.load(f'{ckpt_base}/en_default_se.pth').to(device)
 
 encode_message = "@MyShell"
 
@@ -82,7 +83,7 @@ for key, value in groupby(data, key_func):
 
     items = list(value)
     for item in items:
-        page = regex.sub("p", item['page'])
+        page = regex.sub("", item['page'])
         text = item['text']
         sentences = nltk.sent_tokenize(text) # this gives us a list of sentences
         sentenceNumber = 1
