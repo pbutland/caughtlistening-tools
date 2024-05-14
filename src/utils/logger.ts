@@ -1,6 +1,6 @@
 import log4js from 'log4js';
 
-export function getLogger(appName: string, level: string = 'info') {
+export function configureLogger(appName: string, level: string = 'info') {
   log4js.configure({
     appenders: {
       out: { type: 'stdout' },
@@ -10,6 +10,4 @@ export function getLogger(appName: string, level: string = 'info') {
       default: { appenders: ['out', 'app'], level },
     },
   });
-
-  return log4js.getLogger(appName);
 }

@@ -1,15 +1,17 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import log4js from 'log4js';
 import { createWorker, OEM } from 'tesseract.js';
 import { Command, Option } from 'commander';
-import { getLogger } from './utils/logger.js';
+import { configureLogger } from './utils/logger.js';
 
 /**
  * Iterates over a list of images and creates a text version for each image file
  */
 
 const APP_NAME = 'png2txt';
-const logger = getLogger(APP_NAME);
+configureLogger(APP_NAME);
+const logger = log4js.getLogger(APP_NAME);
 
 const program = new Command();
 

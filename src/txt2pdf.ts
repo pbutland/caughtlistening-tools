@@ -1,14 +1,16 @@
 import * as fs from 'fs';
+import log4js from 'log4js';
 import PDFDocument from "pdfkit";
 import { Command, Option } from 'commander';
-import { getLogger } from './utils/logger.js';
+import { configureLogger } from './utils/logger.js';
 
 /**
  * Iterates over a list of text transcript files and combines them all into a single PDF file
  */
 
 const APP_NAME = 'txt2pdf';
-const logger = getLogger(APP_NAME);
+configureLogger(APP_NAME);
+const logger = log4js.getLogger(APP_NAME);
 
 const program = new Command();
 

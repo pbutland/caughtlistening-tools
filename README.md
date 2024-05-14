@@ -12,8 +12,12 @@ Data produced from these tools can be found at the [caughtlistening](https://pbu
 
 ## Complete conversion process
 
-The following diagram depicts the entire transformation process from HTML to MP3, with optional PDF and TXT outputs too.
+The diagram below depicts the entire transformation process from HTML to MP3, with optional PDF and TXT outputs too.
 
+All steps in the process (except for the audio generation) can be executed by the following command:
+```
+convert.sh <inputDir>
+```
 
 ```
  ┌───────┐
@@ -37,7 +41,7 @@ The following diagram depicts the entire transformation process from HTML to MP3
  └───────┘              └───────┘
      |
      |
- (tx2json)
+ (txt2json)
      |
      V
  ┌───────┐               ┌───────┐
@@ -153,10 +157,10 @@ yarn json2mp3 -o ./output transcript.json
 A utility to concatenate mp3 files into a single mp3 file.  
 
 ```
-yarn mergemp3s --help
+yarn merge-audio --help
 ```
 
 E.g.
 ```
-yarn mergemp3s -o ./output/transcript.mp3 *.mp3
+yarn merge-audio -o ./output/transcript.mp3 *.mp3
 ```

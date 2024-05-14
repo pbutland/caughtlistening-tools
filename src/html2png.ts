@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
+import log4js from 'log4js';
 import { Command } from 'commander';
-import { getLogger } from './utils/logger.js';
+import { configureLogger } from './utils/logger.js';
 
 /**
  * Iterates over a list of html transcript files and extracts an image for each file and saves each image as a png
@@ -10,7 +11,8 @@ import { getLogger } from './utils/logger.js';
 const IMAGE_DATA_REGEX = /<img src="data:image\/png;base64,(.*)" .*>/;
 
 const APP_NAME = 'html2png';
-const logger = getLogger(APP_NAME);
+configureLogger(APP_NAME);
+const logger = log4js.getLogger(APP_NAME);
 
 const program = new Command();
 

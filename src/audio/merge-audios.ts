@@ -1,13 +1,15 @@
 import ffmpeg from 'fluent-ffmpeg';
+import log4js from 'log4js';
 import { Command, Option } from 'commander';
-import { getLogger } from './utils/logger.js';
+import { configureLogger } from '../utils/logger.js';
 
 /**
  * Takes a list of mp3 files and concatenates them into a single mp3 file
  */
 
 const APP_NAME = 'mergemp3s';
-const logger = getLogger(APP_NAME);
+configureLogger(APP_NAME);
+const logger = log4js.getLogger(APP_NAME);
 
 const program = new Command();
 
