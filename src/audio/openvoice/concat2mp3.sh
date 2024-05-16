@@ -12,6 +12,6 @@ fi
 INPUT_DIR=$1
 OUTPUT_FILE=$2
 
-printf "file '%s'\n" $INPUT_DIR/*.wav > wavs.txt
-ffmpeg -f concat -safe 0 -i wavs.txt -c copy $OUTPUT_FILE
+printf "file '%s'\n" $INPUT_DIR/* > wavs.txt
+ffmpeg -f concat -safe 0 -i wavs.txt -acodec mp3 $OUTPUT_FILE
 rm wavs.txt

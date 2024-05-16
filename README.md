@@ -55,14 +55,6 @@ convert.sh <inputDir>
  ┌───────┐
  │  MP3  │
  └───────┘
-     |
-     |
- (mergmp3s)
-     |
-     V
- ┌───────┐
- │  MP3  │
- └───────┘
 ```
 
 ## Extract image from html
@@ -150,17 +142,4 @@ yarn json2mp3 --help
 E.g.
 ```
 yarn json2mp3 -o ./output transcript.json
-```
-
-## Combine mp3 audio files
-
-A utility to concatenate mp3 files into a single mp3 file.  
-
-```
-yarn merge-audio --help
-```
-
-E.g.
-```
-yarn merge-audio -o ./output/transcript.mp3 *.mp3
 ```
