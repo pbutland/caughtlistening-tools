@@ -10,7 +10,6 @@
         "png2txt": "yarn build && node ./dist/png2txt.js",
         "txt2pdf": "yarn build && node ./dist/txt2pdf.js",
         "txt2json": "yarn build && node ./dist/txt2json.js",
-        "merge-audio": "yarn build && node ./dist/audio/merge-audio.js",
         "build": "tsc",
         "test": "NODE_OPTIONS='--experimental-vm-modules' $(yarn bin jest)"
     },
