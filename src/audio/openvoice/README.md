@@ -21,8 +21,13 @@ If interrupted, execution continues from where it stopped.
 
 For usage information, enter...
 ```
-pythong json2audio.py -h
+python json2audio.py -h
 ```
+Example:
+```
+python json2audio.py -c -w 5 -v v2 -o ./data/output -r ./data/reference input.json
+```
+The above command will clear (`-c`) the output directory `./data/output` (`-o`) before processing the file `input.json`.  It will use `./data/reference` (`-r`) as the directory containing the reference voice audio for voice cloning.  It will use the `v2` (`-v`) version of OpenVoice and will use `5` (`-w`) worker threads.
 
 ## Concatenate the generated audio files
 
