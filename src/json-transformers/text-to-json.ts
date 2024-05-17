@@ -10,6 +10,7 @@ const CHARACTER_SPLIT_REGEX = /(^\({1})|(^Q{1}\.\s)|(^Q{1}\s)|(^O{1}\.\s)|(^O{1}
 const REGEX_EXAMINATION = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^Q\.?\s{1})|(^O\.?\s{1})|(^0\.?\s{1})|(^A\.?\s{1})|(^[A-Z .]*: )/;
 // regex to identify character outside of examination
 const REGEX_NORMAL = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^[A-Z .]*: )/;
+const REGEX_WITNESS_CALLED = /, called as a witness|, called as witness/;
 
 interface LineDetails {
   page: string;
@@ -82,7 +83,8 @@ function collateIntoCharacterPerLine(lines: ReadonlyArray<LineDetails>): LineDet
   let regex = REGEX_NORMAL;
   let currentCharacter = '';
   let newPage = false;
-  lines.forEach(line => {
+  let witnessCalled = false;
+  lines.forEach((line, index) => {
     if (regex === REGEX_EXAMINATION && line.lineText?.match(/.* the witness is excused .*/)) {
       // end of witness direct/cross examination
       regex = REGEX_NORMAL;
@@ -91,7 +93,11 @@ function collateIntoCharacterPerLine(lines: ReadonlyArray<LineDetails>): LineDet
       // start of witness direct/cross examination
       regex = REGEX_EXAMINATION;
     }
-    if (line.lineText === undefined || line.lineText.match(regex) || newPage) {
+    const nextLine = index < lines.length-1 ? lines[index+1].lineText : undefined;
+    witnessCalled = !witnessCalled && (!!line.lineText && REGEX_WITNESS_CALLED.test(line.lineText) ||
+      (!!nextLine && /^(herein, )?called as (a )?witness/.test(nextLine)));
+    
+    if (line.lineText === undefined || line.lineText.match(regex) || newPage || witnessCalled) {
       // if text is continued onto another page then remember the previous speaker
       const newCharacterLine = line.lineText?.split(CHARACTER_SPLIT_REGEX).filter(item => item !== undefined && item !== '');
       if (newPage) {
@@ -111,6 +117,7 @@ function collateIntoCharacterPerLine(lines: ReadonlyArray<LineDetails>): LineDet
         currentCharacter = newCharacterLine[0];
       }
     } else {
+      witnessCalled = false;
       array[arrayIdx].lineText += ` ${line.lineText}`;
     }
   });
@@ -143,22 +150,26 @@ function constructLineDetails(lines: ReadonlyArray<LineDetails>) {
     const [person, text] = lineText.split(CHARACTER_SPLIT_REGEX).filter(item => item !== undefined && item !== '');
 
     // identify if witness has been called and set voice
+    const witnessCalled = REGEX_WITNESS_CALLED.test(person);
     const witness = text ? matchesWitness(text) : undefined;
     if (witness) {
       setVoice(witness, ['THEWITNESS', 'A']);
     }
 
     // get voice for character and return object for line
-    if (text !== undefined) {
+    if (text !== undefined || witnessCalled) {
       const cleansedPerson = person.replace(/^O.? /, 'Q '); // "O " misidentified as "Q "
       let personKey = stripSpecialCharacters(cleansedPerson);
-      let voice = getVoice(personKey);
+      let voice = getVoice('(');
+      if (!witnessCalled) {
+        voice = getVoice(personKey);
+      }
       return {
         page: line.page,
         lineNumber: line.lineNumber,
-        character: cleansedPerson.startsWith('(') ? 'AUDIO DESCRIPTION:' : cleansedPerson.trim(),
+        character: cleansedPerson.startsWith('(') || witnessCalled ? 'AUDIO DESCRIPTION:' : cleansedPerson.trim(),
         voice: voice,
-        text: cleansedPerson.startsWith('(') ? text.trim().slice(0, -1) : text.trim(),
+        text: witnessCalled ? person.trim() : cleansedPerson.startsWith('(') ? text.trim().slice(0, -1) : text.trim(),
       }
     }
   }).filter(object => object !== undefined);
