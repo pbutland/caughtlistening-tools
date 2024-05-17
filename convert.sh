@@ -35,7 +35,7 @@ FILENAME=$(basename $INPUT_DIR)
 yarn txt2pdf -o "$INPUT_DIR/$FILENAME.pdf" $TXT_FILES
 
 # Create JSON from text
-yarn txt2json -o "$INPUT_DIR/$FILENAME.json" -p $TXT_FILES
+yarn txt2json -p -o "$INPUT_DIR/$FILENAME.json" $TXT_FILES
 
 # Create text from JSON
 yarn json2txt -o "$INPUT_DIR/$FILENAME.txt" "$INPUT_DIR/$FILENAME.json"

@@ -738,6 +738,11 @@
   dependencies:
     "@types/yargs-parser" "*"
 
+"@xmldom/xmldom@^0.8.6":
+  version "0.8.10"
+  resolved "https://registry.yarnpkg.com/@xmldom/xmldom/-/xmldom-0.8.10.tgz#a1337ca426aa61cef9fe15b5b28e340a72f6fa99"
+  integrity sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==
+
 acorn-walk@^8.1.1:
   version "8.3.2"
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-8.3.2.tgz#7703af9415f1b6db9315d6895503862e231d34aa"
@@ -3143,6 +3148,13 @@ path-parse@^1.0.7:
   resolved "https://registry.yarnpkg.com/path-parse/-/path-parse-1.0.7.tgz#fbc114b60ca42b30d9daf5858e4bd68bbedb6735"
   integrity sha512-LDJzPVEEEPR+y48z93A0Ed0yXb8pAByGWo/k5YYdYgpY2/2EsOsksJrq7lOHxryrVOn1ejG6oAp8ahvOIQD8sw==
 
+pdf2json@3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/pdf2json/-/pdf2json-3.0.1.tgz#2ceccea811668aff64e30e3711047d941ec881da"
+  integrity sha512-1pNsakC8F+OuFS72U+ZI0u8J/voPYYDYHj/0B/7ywYUm3w0QurkDBy3pH35kzygjgmJJVHk2a9I6gBswFF8hQQ==
+  dependencies:
+    "@xmldom/xmldom" "^0.8.6"
+
 pdfkit@^0.15.0:
   version "0.15.0"
   resolved "https://registry.yarnpkg.com/pdfkit/-/pdfkit-0.15.0.tgz#7152f1bfa500c37d25b5f8cd4850db09a8108941"
@@ -3153,6 +3165,13 @@ pdfkit@^0.15.0:
     jpeg-exif "^1.1.4"
     linebreak "^1.0.2"
     png-js "^1.0.0"
+
+pdfreader@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/pdfreader/-/pdfreader-3.0.2.tgz#f0cb23184d3d919f3479375bf4ae87dc403a17c2"
+  integrity sha512-9Wo4B+Z/Gy0oePD/7du/M7W4D/lFhKq6wyApt02CDsp5YYyrJbzzRqIkXrNBmc2w0sfEkfsNzTjjMUV1R3jJnA==
+  dependencies:
+    pdf2json "3.0.1"
 
 pend@~1.2.0:
   version "1.2.0"

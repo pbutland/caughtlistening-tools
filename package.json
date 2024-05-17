@@ -7,6 +7,7 @@
         "html2png": "yarn build && node ./dist/html2png.js",
         "json2mp3": "yarn build && node ./dist/audio/elevenlabs/json2mp3.js",
         "json2txt": "yarn build && node ./dist/json2txt.js",
+        "pdf2txt": "yarn build && node ./dist/pdf2txt.js",
         "png2txt": "yarn build && node ./dist/png2txt.js",
         "txt2pdf": "yarn build && node ./dist/txt2pdf.js",
         "txt2json": "yarn build && node ./dist/txt2json.js",
@@ -23,6 +24,7 @@
         "node-gtts": "^2.0.2",
         "node-jq": "^4.3.1",
         "pdfkit": "^0.15.0",
+        "pdfreader": "^3.0.2",
         "string-similarity": "^4.0.4",
         "tesseract.js": "^5.0.5"
     },
