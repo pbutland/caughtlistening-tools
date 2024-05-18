@@ -42,6 +42,7 @@ describe('matchesExamination', () => {
     ${'DIRECT EXAMINATION (Continued.) 9 BY MR . STE INGLASS:'} | ${'MR . STE INGLASS:'}
     ${'DIRECT EXAMINATION BY MR . STE INGLASS:'}                | ${'MR . STE INGLASS:'}
     ${'DIRECT EXAMINATION BY MR. STEINGLASS:'}                  | ${'MR. STEINGLASS:'}
+    ${'BY MR. STEINGLASS:'}                                     | ${'MR. STEINGLASS:'}
   `('matches', ({ text, expected }) => {
     expect(matchesExamination(text)).toEqual(expected);
   });
