@@ -1,9 +1,11 @@
+import sys
 import logging
 import argparse
 import json
 import re
 import os
 import concurrent.futures
+import time
 import torch
 import nltk
 from itertools import groupby
@@ -41,6 +43,7 @@ parser.add_argument('-w', '--workers', help='Number of workers', default=3, type
 parser.add_argument('-o', '--output', help='Output directory for generated audio files', default='data/output')
 parser.add_argument('-r', '--reference', help='Directory for reference files', default='data/reference')
 parser.add_argument('-e', '--extension', help='File extension to use for generated audio files', default='wav')
+parser.add_argument('-m', '--memory', help='Sets an upper memory percentage', default=95, type=int)
 parser.add_argument('-c', '--clean', help='Delete files from output directory before execution', action='store_true')
 args = parser.parse_args()
 
@@ -109,7 +112,11 @@ for key, value in groupby(data, key_func):
             filename = '%s-%s-%s-%s' % (Path(file).stem, page, item['lineNumber'].zfill(2), str(sentenceNumber).zfill(3))
 
             save_path_prefix = f'{output_dir}/{filename}'
-            audio_details.append(Details(save_path_prefix, reference_speaker, sentence))
+            save_path = f'{save_path_prefix}{ext}'
+            if os.path.exists(save_path):
+                logger.warn(f'Output file {save_path} already exists. Skipping!')
+            else:
+                audio_details.append(Details(save_path_prefix, reference_speaker, sentence))
             sentenceNumber += 1
 
 speaker_progress = 0
@@ -130,13 +137,17 @@ def generate_targets(speaker):
     return speaker
 
 logger.info(f'Total speakers: {num_speakers}')
+logger.info(f'Total sentences: {num_sentences}')
+
+if num_sentences == 0:
+    sys.exit(0)
+
 with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
     future_to_generate = {executor.submit(generate_targets, speaker): speaker for speaker in reference_speakers}
     for future in concurrent.futures.as_completed(future_to_generate):
         item = future_to_generate[future]
         try:
             data = future.result()
-            # TODO: increment progress
         except Exception as exc:
             logger.error('%r generated an exception: %s' % (item, exc))
         else:
@@ -147,9 +158,6 @@ def generate(item):
     logger.info(f'Generating {item.filename} {item.reference_speaker} {item.text}')
     src_path = f'{item.filename}-tmp{ext}'
     save_path = f'{item.filename}{ext}'
-    if os.path.exists(save_path):
-        logger.warn(f'Output file {save_path} already exists. Skipping!')
-        return item
 
     logger.info(f'Getting speaker {item.reference_speaker}')
     target_se, audio_name = reference_targets[item.reference_speaker]
@@ -183,16 +191,25 @@ def generate(item):
         os.remove(src_path)
     return save_path
 
-logger.info(f'Total sentences: {num_sentences}')
 with concurrent.futures.ThreadPoolExecutor(max_workers=args.workers) as executor:
     future_to_generate = {executor.submit(generate, detail): detail for detail in audio_details}
     for future in concurrent.futures.as_completed(future_to_generate):
         item = future_to_generate[future]
         try:
             data = future.result()
-            #increment progress
         except Exception as exc:
             logger.error('%r generated an exception: %s' % (item, exc))
         else:
+            # Getting all memory using os.popen()
+            total_memory, used_memory, free_memory = map(
+                int, os.popen('free -t -m').readlines()[-1].split()[1:])
+            # Memory usage
+            memoryPercentage = round((used_memory/total_memory) * 100, 2)
+            logger.info(f'RAM memory {memoryPercentage}% used')
+            if args.memory and memoryPercentage > args.memory:
+                logger.info('Shutting down!')
+                for f in future_to_generate:
+                    f.cancel()
+                sys.exit(1)
             audio_progress += 1
             logger.info(f'Generated {data} ({audio_progress/num_sentences:.2%})')

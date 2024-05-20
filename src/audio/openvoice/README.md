@@ -29,6 +29,15 @@ python json2audio.py -c -w 5 -v v2 -o ./data/output -r ./data/reference input.js
 ```
 The above command will clear (`-c`) the output directory `./data/output` (`-o`) before processing the file `input.json`.  It will use `./data/reference` (`-r`) as the directory containing the reference voice audio for voice cloning.  It will use the `v2` (`-v`) version of OpenVoice and will use `5` (`-w`) worker threads.
 
+### V2 memory issue
+
+There appears to be a memory leak with the v2 version.
+The following script can be executed which allows an upper percentage of memory to be set as a threshold. The program will exit cleanly if the limit it reached, sleep for a few seconds, before starting again from where it last left off.
+
+```
+./json2audio.sh '-w 5 -v v2 -m 90 -o ./data/output -r ./data/reference input.json'
+```
+
 ## Concatenate the generated audio files
 
 There are two ways that are provided to concatenate all of the generated audio files.  Both approaches require [ffmpeg](https://ffmpeg.org/) to be installed.
