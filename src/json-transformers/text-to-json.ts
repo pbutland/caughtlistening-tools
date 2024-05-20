@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as jq from 'node-jq';
 import log4js from 'log4js';
-import { matchesExamination, matchesWitness, stripSpecialCharacters } from '../utils/utils.js';
+import { getCleansedText, matchesExamination, matchesWitness, stripSpecialCharacters } from '../utils/utils.js';
 import { getVoice, setVoice } from '../utils/voices.js';
 
 // regex to split character part from text (e.g. THE COURT: Good morning)
@@ -10,7 +10,7 @@ const CHARACTER_SPLIT_REGEX = /(^\({1})|(^Q{1}\.\s)|(^Q{1}\s)|(^O{1}\.\s)|(^O{1}
 const REGEX_EXAMINATION = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^Q\.?\s{1})|(^O\.?\s{1})|(^0\.?\s{1})|(^A\.?\s{1})|(^[A-Z .]*: )|(BY [A-Z .]*:)/;
 // regex to identify character outside of examination
 const REGEX_NORMAL = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^[A-Z .]*: )|(BY [A-Z .]*:)/;
-const REGEX_WITNESS_CALLED = /, called as a witness|, called as witness/;
+const REGEX_WITNESS_CALLED = /,[ ]* called as a witness|,[ ]* called as witness/;
 
 interface LineDetails {
   page: string;
@@ -29,7 +29,7 @@ export async function run(files: ReadonlyArray<string>, outputFileName: string, 
     return readFile(file);
   });
 
-  const cleansedLines = cleanLines(pages);  
+  const cleansedLines = cleanLines(pages);
   const linesByCharacter = collateIntoCharacterPerLine(cleansedLines);
   const lineDetails = constructLineDetails(linesByCharacter);
 
@@ -172,7 +172,7 @@ function constructLineDetails(lines: ReadonlyArray<LineDetails>) {
         lineNumber: line.lineNumber,
         character: cleansedPerson.startsWith('(') || witnessCalled ? 'AUDIO DESCRIPTION:' : cleansedPerson.trim(),
         voice: voice,
-        text: witnessCalled ? person.trim() : cleansedPerson.startsWith('(') ? text.trim().slice(0, -1) : text.trim().replace(/^\*{3,}/, ''),
+        text: getCleansedText(cleansedPerson, text, witnessCalled),
       }
     }
   }).filter(object => object !== undefined);

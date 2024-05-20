@@ -33,3 +33,8 @@ const CHARACTER_SPLIT_REGEX = /(^\({1})|(^Q{1}\.\s)|(^Q{1}\s)|(^0{1}\.\s)|(^0{1}
 export function splitCharacterFromText(str: string) {
   return str.split(CHARACTER_SPLIT_REGEX).filter(item => item !== undefined && item !== '')
 }
+
+export function getCleansedText(person: string, text: string, witnessCalled: boolean) {
+  const cleansedText = witnessCalled ? person : person.startsWith('(') ? text.trim().slice(0, -1) : text;
+  return cleansedText.replace(/^\*{3,}/, '').replaceAll(/\.  /g, '. ').trim();
+}

@@ -1,5 +1,5 @@
 import { describe, expect } from '@jest/globals';
-import { matches, matchesExamination, matchesWitness, splitCharacterFromText, stripSpecialCharacters } from '../utils.js';
+import { getCleansedText, matches, matchesExamination, matchesWitness, splitCharacterFromText, stripSpecialCharacters } from '../utils.js';
 
 describe('stripSpecialCharacters', () => {
   it.each`
@@ -67,5 +67,19 @@ describe('splitCharacterFromText', () => {
     const [person, text] = splitCharacterFromText(lineText);
     expect(person).toEqual(expectedPerson);
     expect(text).toEqual(expectedText);
+  });
+});
+
+describe('getCleansedText', () => {
+  it.each`
+    person                          | text                                            | witnessCalled | expectedResult
+    ${'B-O-B, called as a witness'} | ${undefined}                                    | ${true}       | ${'B-O-B, called as a witness'}
+    ${'('}                          | ${'remove trailing bracket for narrator text)'} | ${false}      | ${'remove trailing bracket for narrator text'}
+    ${'MR. HAPPY'}                  | ${'**** remove preceding asterisk'}             | ${false}      | ${'remove preceding asterisk'}
+    ${'MS. WISE'}                   | ${'     trimmed string     '}                   | ${false}      | ${'trimmed string'}
+    ${'MISS. SUNSHINE'}             | ${'Trailing space.  After full-stop'}           | ${false}      | ${'Trailing space. After full-stop'}
+  `('matches', ({ person, text, witnessCalled, expectedResult }) => {
+    const result = getCleansedText(person, text, witnessCalled);
+    expect(result).toEqual(expectedResult);
   });
 });
