@@ -1,5 +1,13 @@
 import { describe, expect } from '@jest/globals';
-import { getCleansedText, matches, matchesExamination, matchesWitness, splitCharacterFromText, stripSpecialCharacters } from '../utils.js';
+import {
+  getCleansedText,
+  isPageNumber,
+  matches,
+  matchesExamination,
+  matchesWitness,
+  splitCharacterFromText,
+  stripSpecialCharacters
+} from '../utils.js';
 
 describe('stripSpecialCharacters', () => {
   it.each`
@@ -81,5 +89,17 @@ describe('getCleansedText', () => {
   `('matches', ({ person, text, witnessCalled, expectedResult }) => {
     const result = getCleansedText(person, text, witnessCalled);
     expect(result).toEqual(expectedResult);
+  });
+});
+
+describe('isPageNumber', () => {
+  it.each`
+    text                   | expected
+    ${'Page number: 8313'} | ${true}
+    ${'Page 8313'}         | ${true}
+    ${'8313'}              | ${true}
+    ${'8 3 1 3'}           | ${true}
+  `('matches', ({ text, expected }) => {
+    expect(isPageNumber(text)).toEqual(expected);
   });
 });

@@ -38,3 +38,9 @@ export function getCleansedText(person: string, text: string, witnessCalled: boo
   const cleansedText = witnessCalled ? person : person.startsWith('(') ? text.trim().slice(0, -1) : text;
   return cleansedText.replace(/^\*{3,}/, '').replaceAll(/\.  /g, '. ').trim();
 }
+
+const PAGE_REGEX = /^(Page.*)?(\d+)/i;
+
+export function isPageNumber(text: string) {
+  return PAGE_REGEX.test(text.replaceAll(/ /g, ''));
+}

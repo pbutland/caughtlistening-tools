@@ -4,12 +4,12 @@ import { Command } from 'commander';
 import { PdfReader } from 'pdfreader';
 
 import { configureLogger } from './utils/logger.js';
+import { isPageNumber } from './utils/utils.js';
 
 const APP_NAME = 'pdf2txt';
 configureLogger(APP_NAME);
 const logger = log4js.getLogger(APP_NAME);
 
-const PAGE_REGEX = /^(Page .*)?(\d+)/i;
 const LINE_NUMBER_REGEX = /^\d{1,2}$/;
 const LINE_WITH_NUMBER_REGEX = /^\d{1,2}\s+.+/;
 
@@ -67,7 +67,7 @@ async function run(file: string, outputDir: string, verify: boolean) {
           hasPageNumber = false;
         }
       } else if (item?.text) {
-        if (!hasPageNumber && PAGE_REGEX.test(item.text.trim())) { // Page number
+        if (!hasPageNumber && isPageNumber(item.text)) { // Page number
           lines.push(item.text);
           ++lineIdx;
           hasPageNumber = true;
@@ -116,7 +116,7 @@ function verifyFiles(outputDir: string, numFiles: number) {
         case 0: // Header
           break;
         case 1: // Page number
-          if(!PAGE_REGEX.test(line)) {
+          if(!/\d+/.test(line)) {
             logger.warn(`Invalid page number ${line} in ${outputPath}`);
           }
           break;
