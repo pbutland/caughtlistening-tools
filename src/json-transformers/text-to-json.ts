@@ -10,7 +10,7 @@ const CHARACTER_SPLIT_REGEX = /(^\({1})|(^Q{1}\.\s)|(^Q{1}\s)|(^O{1}\.\s)|(^O{1}
 const REGEX_EXAMINATION = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^Q\.?\s{1})|(^O\.?\s{1})|(^0\.?\s{1})|(^A\.?\s{1})|(^[A-Z .]*: )|(BY [A-Z .]*:)/;
 // regex to identify character outside of examination
 const REGEX_NORMAL = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^[A-Z .]*: )|(BY [A-Z .]*:)/;
-const REGEX_WITNESS_CALLED = /,[ ]* called as a witness|,[ ]* called as witness/;
+const REGEX_WITNESS_CALLED = /,[ ]* called as a witness|,[ ]* called as witness|,[ ]* having first been duly/;
 
 interface LineDetails {
   page: string;

@@ -62,6 +62,7 @@ describe('matchesWitness', () => {
     ${'The People call David Pecker'}                 | ${'David Pecker'}
     ${'At this time, the People call Doug Daus'}      | ${'Doug Daus'}
     ${'The People call Stormy Daniels, your Honour.'} | ${'Stormy Daniels'}
+    ${'Yes. The Defense calls Daniel Sitko'}               | ${'Daniel Sitko'}
   `('matches', ({ text, expected }) => {
     expect(matchesWitness(text)).toEqual(expected);
   });

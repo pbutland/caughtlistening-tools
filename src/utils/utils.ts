@@ -12,7 +12,7 @@ export function matches(str: string) {
 
 // Phrases to indicate speakers during direct/cross examination
 const EXAMINATION_REGEX = /.*EXAMINATION.*BY (.*:)|BY (.*:)/;
-const WITNESS_NAME_REGEX = /the people call ([a-zA-Z\s\.]*),?/i;
+const WITNESS_NAME_REGEX = /the people call ([a-zA-Z\s\.]*),?|the defense calls ([a-zA-Z\s\.]*),?/i;
 
 export function matchesExamination(str: string) {
   const examination = str.match(EXAMINATION_REGEX);
@@ -24,7 +24,7 @@ export function matchesExamination(str: string) {
 export function matchesWitness(str: string) {
   const witness = str.match(WITNESS_NAME_REGEX);
   if (witness) {
-    return witness[1];
+    return witness[1] ? witness[1] : witness[2];
   }
 }
 
