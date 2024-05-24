@@ -20,7 +20,7 @@ FILENAME=$(basename $OUTPUT_DIR)
 
 # Create text from PDF
 mkdir -p "$OUTPUT_DIR/text"
-yarn pdf2txt -v -o "$OUTPUT_DIR/text" $PDF_FILE
+yarn pdf2txt -o "$OUTPUT_DIR/text" $PDF_FILE
 
 # Create JSON from text
 TXT_FILES="$OUTPUT_DIR/text/*.txt"
