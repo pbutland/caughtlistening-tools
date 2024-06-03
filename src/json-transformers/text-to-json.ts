@@ -5,11 +5,11 @@ import { getCleansedText, matchesExamination, matchesWitness, stripSpecialCharac
 import { getVoice, setVoice } from '../utils/voices.js';
 
 // regex to split character part from text (e.g. THE COURT: Good morning)
-const CHARACTER_SPLIT_REGEX = /(^\({1})|(^Q{1}\.\s)|(^Q{1}\s)|(^O{1}\.\s)|(^O{1}\s)|(^0{1}\.\s)|(^0{1}\s)|(^A{1}\.\s)|(^A{1}\s)|(^[A-Z .]*: )|(BY [A-Z .]*:)/;
+const CHARACTER_SPLIT_REGEX = /(^\({1})|(^Q{1}\.\s)|(^Q{1}\s)|(^O{1}\.\s)|(^O{1}\s)|(^0{1}\.\s)|(^0{1}\s)|(^A{1}\.\s)|(^A{1}\s)|(^[A-Z0-9 .#]*: )|(BY [A-Z .]*:)/;
 // regex to identify character during examination
-const REGEX_EXAMINATION = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^Q\.?\s{1})|(^O\.?\s{1})|(^0\.?\s{1})|(^A\.?\s{1})|(^[A-Z .]*: )|(BY [A-Z .]*:)/;
+const REGEX_EXAMINATION = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^Q\.?\s{1})|(^O\.?\s{1})|(^0\.?\s{1})|(^A\.?\s{1})|(^[A-Z0-9 .#]*: )|(BY [A-Z .]*:)/;
 // regex to identify character outside of examination
-const REGEX_NORMAL = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^[A-Z .]*: )|(BY [A-Z .]*:)/;
+const REGEX_NORMAL = /(^.*EXAMINATION)|(^\*{3,})|(^\({1})|(^[A-Z0-9 .#]*: )|(BY [A-Z .]*:)/;
 const REGEX_WITNESS_CALLED = /,[ ]* called as a witness|,[ ]* called as witness|,[ ]* having first been duly/;
 
 interface LineDetails {
@@ -31,7 +31,7 @@ export async function run(files: ReadonlyArray<string>, outputFileName: string, 
 
   const cleansedLines = cleanLines(pages);
   const linesByCharacter = collateIntoCharacterPerLine(cleansedLines);
-  const lineDetails = constructLineDetails(linesByCharacter);
+  const lineDetails = constructLineDetails(linesByCharacter);//.filter(line => line?.text !== undefined);
 
   let jsonString = JSON.stringify(lineDetails);
   if (pretty) {
@@ -94,15 +94,21 @@ function collateIntoCharacterPerLine(lines: ReadonlyArray<LineDetails>): LineDet
       // start of witness direct/cross examination
       regex = REGEX_EXAMINATION;
     }
+    const previousClosingBracket = index > 0 ? lines[index-1].lineText?.trim().endsWith(')') : false;
     const nextLine = index < lines.length-1 ? lines[index+1].lineText : undefined;
     witnessCalled = !witnessCalled && (!!line.lineText && REGEX_WITNESS_CALLED.test(line.lineText) ||
       (!!nextLine && /^(herein, )?called as (a )?witness/.test(nextLine)));
     
-    if (line.lineText === undefined || (!examination && line.lineText.match(regex)) || newPage || witnessCalled) {
+    if (line.lineText === undefined || (!examination && line.lineText.match(regex)) || newPage || witnessCalled || previousClosingBracket) {
       examination = !!line.lineText && /.*EXAMINATION/.test(line.lineText);
       // if text is continued onto another page then remember the previous speaker
       const newCharacterLine = line.lineText?.split(CHARACTER_SPLIT_REGEX).filter(item => item !== undefined && item !== '');
-      if (newPage) {
+      if (newPage || previousClosingBracket) {
+        if (previousClosingBracket && line.lineText === undefined || line.lineText?.startsWith('***') || line.lineText?.startsWith('~k')) {
+          array.push(line);
+          arrayIdx++;
+          return;
+        }
         if (newCharacterLine?.length && newCharacterLine?.length > 1) {
           currentCharacter = newCharacterLine[0];
         } else if (!line.lineText?.startsWith("(") && !line.lineText?.match(/.*EXAMINATION.*/) && !line.lineText?.match(/^BY .*/)) {

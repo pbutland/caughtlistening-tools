@@ -72,6 +72,7 @@ describe('splitCharacterFromText', () => {
   it.each`
     lineText                       | expectedPerson   | expectedText
     ${'THE COURT: Ms. Hoffinger.'} | ${'THE COURT: '} | ${'Ms. Hoffinger.'}
+    ${'JUROR #1: Ms. Hoffinger.'} | ${'JUROR #1: '} | ${'Ms. Hoffinger.'}
   `('matches', ({ lineText, expectedPerson, expectedText }) => {
     const [person, text] = splitCharacterFromText(lineText);
     expect(person).toEqual(expectedPerson);

@@ -31,12 +31,16 @@
     "Daniel Dixon.": "male_voice_16",
     "Daniel Sitko.": "male_voice_17",
     "Robert Costello.": "male_voice_18",
+    "JURYFOREPERSON": "male_voice_19",
+    "THEJURORS": "male_voice_19",
+    "JUROR#1": "male_voice_19",
     "MR.STEINGLASS": "male_voice_2",
     "MR.BLANCHE": "male_voice_3",
     "MR.COLANGELO": "male_voice_4",
     "David Pecker.": "male_voice_5",
     "MR.BOVE": "male_voice_6",
     "MR.CONROY": "male_voice_7",
+    "THEDEFENDANT": "male_voice_8",
     "MR.TRUMP": "male_voice_8",
     "Gary Farro.": "male_voice_9"
 }

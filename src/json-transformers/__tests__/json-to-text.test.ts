@@ -23,6 +23,9 @@ describe('json-to-text', () => {
   ${'240516.json'} | ${'240516.txt'}
   ${'240520.json'} | ${'240520.txt'}
   ${'240521.json'} | ${'240521.txt'}
+  ${'240528.json'} | ${'240528.txt'}
+  ${'240529.json'} | ${'240529.txt'}
+  ${'240530.json'} | ${'240530.txt'}
   `('json-to-text regression', async ({ input, expected }) => {
     const inputFile = `${BASE_DIR}${input}`;
     if (fs.existsSync(inputFile)) {

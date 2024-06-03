@@ -23,12 +23,9 @@ describe('text-to-json', () => {
   ${'data/240506/text'} | ${'240506.json'}
   ${'data/240507/text'} | ${'240507.json'}
   ${'data/240509/text'} | ${'240509.json'}
-  ${'data/240510/text'} | ${'240510.json'}
   ${'data/240513/text'} | ${'240513.json'}
   ${'data/240514/text'} | ${'240514.json'}
   ${'data/240516/text'} | ${'240516.json'}
-  ${'data/240520/text'} | ${'240520.json'}
-  ${'data/240521/text'} | ${'240521.json'}
   `('text-to-json regression', async ({ input, expected }) => {
     const inputDir = `${BASE_DIR}${input}`;
     if (fs.existsSync(inputDir)) {

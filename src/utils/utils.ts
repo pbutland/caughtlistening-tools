@@ -28,7 +28,7 @@ export function matchesWitness(str: string) {
   }
 }
 
-const CHARACTER_SPLIT_REGEX = /(^\({1})|(^Q{1}\.\s)|(^Q{1}\s)|(^0{1}\.\s)|(^0{1}\s)|(^A{1}\.\s)|(^A{1}\s)|(^[A-Z .]*: )/;
+const CHARACTER_SPLIT_REGEX = /(^\({1})|(^Q{1}\.\s)|(^Q{1}\s)|(^0{1}\.\s)|(^0{1}\s)|(^A{1}\.\s)|(^A{1}\s)|(^[A-Z0-9 .#]*: )/;
 
 export function splitCharacterFromText(str: string) {
   return str.split(CHARACTER_SPLIT_REGEX).filter(item => item !== undefined && item !== '')
