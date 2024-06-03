@@ -45,6 +45,7 @@ parser.add_argument('-r', '--reference', help='Directory for reference files', d
 parser.add_argument('-e', '--extension', help='File extension to use for generated audio files', default='wav')
 parser.add_argument('-m', '--memory', help='Sets an upper memory percentage', default=95, type=int)
 parser.add_argument('-c', '--clean', help='Delete files from output directory before execution', action='store_true')
+parser.add_argument('-ow', '--overwrite', help='Replace any existing files in output directory', action='store_true')
 args = parser.parse_args()
 
 ext = f'.{args.extension}'
@@ -113,7 +114,7 @@ for key, value in groupby(data, key_func):
 
             save_path_prefix = f'{output_dir}/{filename}'
             save_path = f'{save_path_prefix}{ext}'
-            if os.path.exists(save_path):
+            if not args.overwrite and os.path.exists(save_path):
                 logger.warn(f'Output file {save_path} already exists. Skipping!')
             else:
                 audio_details.append(Details(save_path_prefix, reference_speaker, sentence))
