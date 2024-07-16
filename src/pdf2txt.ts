@@ -54,19 +54,20 @@ async function run(file: string, outputDir: string, dryrun: boolean) {
         pages.push(lines); // add last page
       }
       pages.shift(); // remove first page
-      pages.forEach((page: any) => {      
+      pages.forEach((page: any, index: number) => {
         const formattedLines: string[] = [];
         formattedLines.push(page.shift().text);
         formattedLines.push(page.shift().text);
       
         const footers = []
+        let previousLine;
         let lineIdx = 2;
         for (const line of page) {
           if (line.text && LINE_NUMBER_REGEX.test(line.text.trim())) { // Line number row
             lineNumber = line.text;
             formattedLines.push(line.text);
             ++lineIdx;
-          } else if (lineNumber) { // Row after line number
+          } else if (lineNumber && line.y === previousLine?.y) { // Row after line number
             lineNumber = undefined;
             formattedLines[lineIdx-1] += `   ${line.text}`;
           } else if (line.text && LINE_WITH_NUMBER_REGEX.test(line.text.trim())) { // Line number row with text
@@ -75,6 +76,7 @@ async function run(file: string, outputDir: string, dryrun: boolean) {
           } else if (line.text) {
             footers.push(line.text);
           }
+          previousLine = line;
         }
 
         if (isPageNumber(formattedLines[0])) {

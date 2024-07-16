@@ -110,7 +110,7 @@ for key, value in groupby(data, key_func):
         sentenceNumber = 1
         # now loop over each sentence
         for sentence in sentences:
-            filename = '%s-%s-%s-%s' % (Path(file).stem, page, item['lineNumber'].zfill(2), str(sentenceNumber).zfill(3))
+            filename = '%s-%s-%s-%s' % (Path(file).stem, str(page).zfill(4), item['lineNumber'].zfill(2), str(sentenceNumber).zfill(3))
 
             save_path_prefix = f'{output_dir}/{filename}'
             save_path = f'{save_path_prefix}{ext}'
