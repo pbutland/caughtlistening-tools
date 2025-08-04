@@ -37,7 +37,7 @@ convert.sh <inputDir>
                            |
                            V
 ┌───────┐              ┌───────┐              ┌───────┐
-│  PDF  │──(pdf2txt)──>│  TXT  │──(png2txt)──>│  PDF  │
+│  PDF  │──(pdf2txt)──>│  TXT  │──(txt2pdf)──>│  PDF  │
 └───────┘              └───────┘              └───────┘
                            |
                            |
